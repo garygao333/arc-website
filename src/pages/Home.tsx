@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 const Home: React.FC = () => {
   return (
@@ -14,11 +14,11 @@ const Home: React.FC = () => {
       <p className="home-desc home-desc-secondary">
       While systems such as ADS or ARIADNE provide the infrastructure for storing and integrating archaeological data, ARC serves as the data collection interface that will digitize and collect image-based data in a uniform and large scale. This will then all combine to contribute toward the creation of a new digital and machine learning era of archaeology with the increases in labeled digital images. 
       </p>
-      <div style={{ marginTop: '32px' }}>
+      {/* <div style={{ marginTop: '32px' }}>
         <Link to="/universal-data" className="home-btn">
           View Data List
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };
