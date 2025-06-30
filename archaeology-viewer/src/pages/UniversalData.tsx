@@ -28,6 +28,47 @@ interface UniversalSherdData {
   notes?: string;
 }
 
+// Qualification types for fine and coarse ware
+const fineWareQualificationTypes = [
+  { label: 'ITS', value: 'its' },
+  { label: 'African', value: 'african' },
+  { label: 'Black Gloss', value: 'black_gloss' },
+  { label: 'Sardinian', value: 'sardinian' },
+  { label: 'Thin Wall', value: 'thin_wall' }
+] as const;
+
+const coarseWareQualificationTypes = [
+  { label: 'Unidentified', value: 'unidentified' },
+  { label: 'Punic', value: 'punic' }
+] as const;
+
+const formatDiagnosticType = (type: string): string => {
+  if (!type) return 'Unspecified';
+  // Capitalize first letter of each word
+  return type
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
+const formatQualificationType = (type: string): string => {
+  if (!type) return 'N/A';
+  
+  // Check fine ware types
+  const fineWareType = fineWareQualificationTypes.find(t => t.value === type.toLowerCase());
+  if (fineWareType) return fineWareType.label;
+  
+  // Check coarse ware types
+  const coarseWareType = coarseWareQualificationTypes.find(t => t.value === type.toLowerCase());
+  if (coarseWareType) return coarseWareType.label;
+  
+  // Default: capitalize first letter of each word
+  return type
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
 const UniversalData: React.FC = () => {
   const [sherds, setSherds] = useState<UniversalSherdData[]>([]);
   const [loading, setLoading] = useState(false);
@@ -53,7 +94,8 @@ const UniversalData: React.FC = () => {
     }, {} as Record<string, number>);
 
     const diagnosticCounts = sherdData.reduce((acc, sherd) => {
-      acc[sherd.diagnosticType] = (acc[sherd.diagnosticType] || 0) + 1;
+      const formattedType = formatDiagnosticType(sherd.diagnosticType);
+      acc[formattedType] = (acc[formattedType] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
@@ -322,6 +364,7 @@ const UniversalData: React.FC = () => {
                 <th>Sherd ID</th>
                 <th>Project ID</th>
                 <th>Diagnostic Type</th>
+                <th>Qualification Type</th>
                 <th>Weight (g)</th>
                 <th>Actions</th>
               </tr>
@@ -331,7 +374,8 @@ const UniversalData: React.FC = () => {
                 <tr key={sherd.id}>
                   <td>{sherd.sherdId}</td>
                   <td>{formatProjectId(sherd.projectId)}</td>
-                  <td>{sherd.diagnosticType}</td>
+                  <td>{formatDiagnosticType(sherd.diagnosticType)}</td>
+                  <td>{formatQualificationType(sherd.qualificationType)}</td>
                   <td>{sherd.weight.toFixed(2)}</td>
                   <td>
                     <button 
